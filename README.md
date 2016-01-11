@@ -5,8 +5,8 @@ The best plugin to manage delivery locations.
 ## Getting Started
 Download the [production version][min] or the [development version][max].
 
-[min]: https://raw.github.com/hulaki/hulaki/master/dist/hulaki.min.js
-[max]: https://raw.github.com/hulaki/hulaki/master/dist/hulaki.js
+[min]: https://raw.github.com/hulaki/hulaki/master/dist/jquery.hulaki.min.js
+[max]: https://raw.github.com/hulaki/hulaki/master/dist/jquery.hulaki.js
 
 In your web page:
 
