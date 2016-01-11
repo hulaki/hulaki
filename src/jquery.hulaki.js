@@ -9,30 +9,69 @@
 (function($) {
 
   // Collection method.
-  $.fn.hulaki = function() {
-    return this.each(function(i) {
-      // Do something awesome to each selected element.
-      $(this).html('awesome' + i);
-    });
+  $.fn.hulaki = function(options) {
+	  // Override default options with passed-in options.
+      var settings = $.extend({}, $.hulaki.options, options);
+	  
+	  return this.each(function() {
+		  // Do something awesome to each selected element.
+		  var element = $(this);
+		  var email = $('#'+settings.emailHolder);
+		  var locationField = $('#'+settings.locationField);
+		  var token = settings.token;
+		  if(element.hasClass('hulaki') && email && email.val() && token && locationField){
+			  element.html('Share delivery location from hulaki');
+			  element.click(callHulaki({email: email.val()}, token, element, locationField));
+		  }
+	  });
   };
-
-  // Static method.
-  $.hulaki = function(options) {
-    // Override default options with passed-in options.
-    options = $.extend({}, $.hulaki.options, options);
-    // Return something awesome.
-    return 'awesome' + options.punctuation;
+  
+  function callHulaki(data, token, element, saveLocationField){
+	  var request = $.ajax({
+	    url: "https://hulaki.herokuapp.com/delivery-location",
+	    method: "POST",
+	    data: data,
+	    dataType: "json",
+		headers: { 'AUTH': token }
+	  });
+ 
+	  request.done(function( msg ) {
+		  if(msg == "UserFound"){ // user found, show delivery locations
+		  	
+		  }else if(msg == "UserNotFound"){
+			  newUserSetup(data, token, element);
+		  }else{
+		  	//saved to db get unique number to the owner in saveLocationField
+		  }
+	  });
+ 
+	  request.fail(function( jqXHR, textStatus ) {
+		  // handle error
+	  });
   };
-
-  // Static method default options.
-  $.hulaki.options = {
-    punctuation: '.'
-  };
-
-  // Custom selector.
-  $.expr[':'].hulaki = function(elem) {
-    // Is this element awesome?
-    return $(elem).text().indexOf('awesome') !== -1;
+  
+  function newUserSetup(data, token, element){
+	  var userSetup = "<div style='display:none;' class='newUserModal'>You seem to be a new user. Please choose your delivery location.<button class='currentLocationButton'>Use my current location</button></div>";
+	  element.append(userSetup);
+	  $('.currentLocationButton').click(getCurrentUserLocation('currentLocationButton', data, token, element));
+	  element.find('.newUserModal').modal();
+	  element.find('.newUserModal').show();
+  }
+  
+  function getCurrentUserLocation(button, data, token, element){
+	  if (navigator.geolocation) {
+		  var position = navigator.geolocation.getCurrentPosition();
+		  callHulaki({email: data.email, longitude: position.coords.longitude, latitude: position.coords.latitude}, token, element);
+	  } else { 
+		  $('.'+button).html("Geolocation is not supported by this browser.");
+	  }
+  }
+  
+  // Plugin defaults – added as a property on our plugin function.
+  $.hulaki.defaults = {
+      token: "YOUR AUTH TOKEN",
+	  emailHolder: "emailHolder",
+	  locationField: "locationField"
   };
 
 }(jQuery));

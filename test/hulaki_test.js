@@ -23,40 +23,31 @@
   module('jQuery#hulaki', {
     // This will run before each test in this module.
     setup: function() {
-      this.elems = $('#qunit-fixture').children();
+		this.hulakiElement = $('#qunit-fixture').find('.hulaki');
+		this.nhulakiElement = $('#quint-fixture').find('.not-hulaki');
     }
   });
 
   test('is chainable', function() {
-    expect(1);
-    // Not a bad test to run on collection methods.
-    strictEqual(this.elems.hulaki(), this.elems, 'should be chainable');
-  });
-
-  test('is awesome', function() {
-    expect(1);
-    strictEqual(this.elems.hulaki().text(), 'awesome0awesome1awesome2', 'should be awesome');
-  });
-
-  module('jQuery.hulaki');
-
-  test('is awesome', function() {
     expect(2);
-    strictEqual($.hulaki(), 'awesome.', 'should be awesome');
-    strictEqual($.hulaki({punctuation: '!'}), 'awesome!', 'should be thoroughly awesome');
+    // Not a bad test to run on collection methods.
+    strictEqual(this.hulakiElement.hulaki(), this.hulakiElement, 'should be chainable');
+	strictEqual(this.nhulakiElement.hulaki(), this.nhulakiElement, 'should be chainable');
   });
-
-  module(':hulaki selector', {
-    // This will run before each test in this module.
-    setup: function() {
-      this.elems = $('#qunit-fixture').children();
-    }
+  
+  test ('is hulaki', function() {
+	  expect(2);
+	  strictEqual(this.hulakiElement.hulaki().text(), 'HULAKIHULAKI', 'should be hulaki');
+	  notStrictEqual(this.nhulakiElement.hulaki().text(), 'HULAKIHULAKI', 'should not be hulaki');
   });
-
-  test('is awesome', function() {
-    expect(1);
-    // Use deepEqual & .get() when comparing jQuery objects.
-    deepEqual(this.elems.filter(':hulaki').get(), this.elems.last().get(), 'knows awesome when it sees it');
-  });
+  
+  // check for options
+  // module('jQuery.hulaki');
+ //
+ //  test('is awesome', function() {
+ // 	  expect(2);
+ //      strictEqual($.hulaki(), 'awesome.', 'should be awesome');
+ //      strictEqual($.hulaki({punctuation: '!'}), 'awesome!', 'should be thoroughly awesome');
+ //  });
 
 }(jQuery));
